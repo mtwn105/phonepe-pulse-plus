@@ -4,24 +4,20 @@ const router = express.Router();
 
 const {
   baseUrl,
-  aggregatedTransactionUrl,
-  aggregatedUserUrl,
+  stateWiseTransactionUrl,
+  stateWiseUserUrl,
 } = require("../constants/pulse_url");
 const { isValidYear, isValidQuarter, isStateValid } = require("../validations");
 
-router.get("/aggregated/transaction/:year/:quarter", async (req, res, next) => {
+router.get("/district-wise/transaction/:state/:year/:quarter", async (req, res, next) => {
   const year = req.params.year;
   const quarter = req.params.quarter;
-  const state = req.query.state;
+  const state = req.params.state;
 
   const yearValid = isValidYear(year);
   const quarterValid = isValidQuarter(quarter);
 
-  let stateValid = true;
-
-  if (!!state && state.length > 0) {
-    stateValid = isStateValid(state);
-  }
+  let stateValid = isStateValid(state);
 
   if (!yearValid || !quarterValid || !stateValid) {
     return res.status(400).send({
@@ -33,14 +29,14 @@ router.get("/aggregated/transaction/:year/:quarter", async (req, res, next) => {
   try {
     const response = await axios.get(
       baseUrl +
-        aggregatedTransactionUrl +
+        stateWiseTransactionUrl +
         `${
           !!state && state.length > 0 ? "/state/" + state + "/" : "/"
         }${year}/${quarter}.json`
     );
     res.send({
       status: "SUCCESS",
-      data: response.data.data,
+      data: response.data.data.hoverDataList,
     });
   } catch (error) {
     res.status(404).send({
@@ -50,18 +46,14 @@ router.get("/aggregated/transaction/:year/:quarter", async (req, res, next) => {
   }
 });
 
-router.get("/aggregated/user/:year/:quarter", async (req, res, next) => {
+router.get("/district-wise/user/:state/:year/:quarter", async (req, res, next) => {
   const year = req.params.year;
   const quarter = req.params.quarter;
-  const state = req.query.state;
+  const state = req.params.state;
 
   const yearValid = isValidYear(year);
   const quarterValid = isValidQuarter(quarter);
-  let stateValid = true;
-
-  if (!!state && state.length > 0) {
-    stateValid = isStateValid(state);
-  }
+  let stateValid = isStateValid(state);
 
   if (!yearValid || !quarterValid || !stateValid) {
     return res.status(400).send({
@@ -73,14 +65,14 @@ router.get("/aggregated/user/:year/:quarter", async (req, res, next) => {
   try {
     const response = await axios.get(
       baseUrl +
-        aggregatedUserUrl +
+        stateWiseUserUrl +
         `${
           !!state && state.length > 0 ? "/state/" + state + "/" : "/"
         }${year}/${quarter}.json`
     );
     res.send({
       status: "SUCCESS",
-      data: response.data.data,
+      data: response.data.data.hoverData,
     });
   } catch (error) {
     res.status(404).send({

@@ -4,12 +4,12 @@ const router = express.Router();
 
 const {
   baseUrl,
-  aggregatedTransactionUrl,
-  aggregatedUserUrl,
+  topTransactionUrl,
+  topUserUrl,
 } = require("../constants/pulse_url");
-const { isValidYear, isValidQuarter, isStateValid } = require("../validations");
+const { isValidYear, isValidQuarter } = require("../validations");
 
-router.get("/aggregated/transaction/:year/:quarter", async (req, res, next) => {
+router.get("/top/transaction/:year/:quarter", async (req, res, next) => {
   const year = req.params.year;
   const quarter = req.params.quarter;
   const state = req.query.state;
@@ -33,7 +33,7 @@ router.get("/aggregated/transaction/:year/:quarter", async (req, res, next) => {
   try {
     const response = await axios.get(
       baseUrl +
-        aggregatedTransactionUrl +
+        topTransactionUrl +
         `${
           !!state && state.length > 0 ? "/state/" + state + "/" : "/"
         }${year}/${quarter}.json`
@@ -50,13 +50,14 @@ router.get("/aggregated/transaction/:year/:quarter", async (req, res, next) => {
   }
 });
 
-router.get("/aggregated/user/:year/:quarter", async (req, res, next) => {
+router.get("/top/user/:year/:quarter", async (req, res, next) => {
   const year = req.params.year;
   const quarter = req.params.quarter;
   const state = req.query.state;
 
   const yearValid = isValidYear(year);
   const quarterValid = isValidQuarter(quarter);
+
   let stateValid = true;
 
   if (!!state && state.length > 0) {
@@ -73,7 +74,7 @@ router.get("/aggregated/user/:year/:quarter", async (req, res, next) => {
   try {
     const response = await axios.get(
       baseUrl +
-        aggregatedUserUrl +
+        topUserUrl +
         `${
           !!state && state.length > 0 ? "/state/" + state + "/" : "/"
         }${year}/${quarter}.json`
