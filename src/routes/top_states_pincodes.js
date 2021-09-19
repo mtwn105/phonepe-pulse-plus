@@ -26,6 +26,9 @@ router.get("/top/transaction/:year/:quarter", async (req, res, next) => {
   if (!yearValid || !quarterValid || !stateValid) {
     return res.status(400).send({
       status: "ERROR",
+      year,
+      quarter,
+      state,
       error: "Invalid input parameters (year or quarter or state)",
     });
   }
@@ -40,11 +43,17 @@ router.get("/top/transaction/:year/:quarter", async (req, res, next) => {
     );
     res.send({
       status: "SUCCESS",
+      year,
+      quarter,
+      state,
       data: response.data.data,
     });
   } catch (error) {
     res.status(404).send({
       status: "ERROR",
+      year,
+      quarter,
+      state,
       error: "Data for given time not found.",
     });
   }
@@ -67,6 +76,9 @@ router.get("/top/user/:year/:quarter", async (req, res, next) => {
   if (!yearValid || !quarterValid || !stateValid) {
     return res.status(400).send({
       status: "ERROR",
+      year,
+      quarter,
+      state,
       error: "Invalid input parameters (year or quarter or state)",
     });
   }
@@ -81,11 +93,17 @@ router.get("/top/user/:year/:quarter", async (req, res, next) => {
     );
     res.send({
       status: "SUCCESS",
+      year,
+      quarter,
+      state,
       data: response.data.data,
     });
   } catch (error) {
     res.status(404).send({
       status: "ERROR",
+      year,
+      quarter,
+      state,
       error: "Data for given time not found.",
     });
   }
